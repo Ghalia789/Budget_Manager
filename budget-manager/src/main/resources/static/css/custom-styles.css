@@ -1,0 +1,58 @@
+:root {
+    --primary-color: #004080;    /* Deep Blue */
+    --accent-color: #4DB6AC;     /* Soft Teal */
+    --neutral-bg: #F4F6F8;       /* Light Gray */
+    --contrast-color: #FF6F61;   /* Coral */
+    --text-color: #333333;       /* Dark Gray */
+    --secondary-text: #555555;   /* Medium Gray */
+}
+
+/* Navbar */
+.navbar {
+    background-color: var(--primary-color) !important;
+}
+
+.navbar .nav-link, .navbar .navbar-brand {
+    color: #fff !important;
+}
+.card {
+    border-radius: 8px;
+    background-color: #F8F9FA;
+}
+
+.card-title {
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+.card-body {
+    padding: 20px;
+}
+
+.navbar .nav-link.active {
+    color: var(--accent-color) !important;
+}
+
+/* Button Overrides */
+.btn-primary {
+    background-color: var(--primary-color) !important;
+    border-color: var(--primary-color) !important;
+}
+
+.btn-secondary {
+    background-color: var(--accent-color) !important;
+    border-color: var(--accent-color) !important;
+}
+
+/* Background and Text */
+body {
+    background-color: var(--neutral-bg);
+    color: var(--text-color);
+}
+
+a {
+    color: var(--primary-color);
+}
+a:hover {
+    color: var(--contrast-color);
+}

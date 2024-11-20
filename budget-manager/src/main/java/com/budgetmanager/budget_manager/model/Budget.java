@@ -25,7 +25,8 @@ public class Budget {
 
     @NotNull(message = "End date cannot be null")
     private LocalDate endDate;
-    private String category;
+
+    private BudgetCategory category;
 
     @ManyToOne
     @JoinColumn(name = "user_id")

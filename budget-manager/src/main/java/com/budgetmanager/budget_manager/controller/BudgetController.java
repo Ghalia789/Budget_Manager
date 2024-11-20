@@ -1,9 +1,11 @@
 package com.budgetmanager.budget_manager.controller;
 
 import com.budgetmanager.budget_manager.model.Budget;
+import com.budgetmanager.budget_manager.model.User;
 import com.budgetmanager.budget_manager.service.BudgetService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -16,6 +18,14 @@ import java.util.List;
 public class BudgetController {
     @Autowired
     private BudgetService budgetService;
+
+
+    @GetMapping
+    public String manageBudgets(Model model, @AuthenticationPrincipal User user) {
+        model.addAttribute("budgets", budgetService.getBudgetsByUserId(user.getUserId()));
+        model.addAttribute("budget", new Budget()); // For edit form
+        return "manage-budgets-homepage";
+    }
     @GetMapping("/new")
     public String showBudgetForm(Model model) {
         model.addAttribute("budget", new Budget());  // Add an empty Budget object to the model
@@ -32,12 +42,12 @@ public class BudgetController {
         return "redirect:/budgets";  // Redirect to the list of all budgets
     }
     // List all budgets
-    @GetMapping
+    /*@GetMapping
     public String getAllBudgets(Model model) {
         List<Budget> budgets = budgetService.getAllBudgets(); // Fetch all budgets
         model.addAttribute("budgets"); // Add budgets to the model
         return "budget-list"; // Thymeleaf template for listing budgets
-    }
+    }*/
 
     // Show the form to update an existing budget
     @GetMapping("/edit/{id}")
