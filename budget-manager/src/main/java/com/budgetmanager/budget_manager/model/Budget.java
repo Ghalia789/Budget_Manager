@@ -14,21 +14,27 @@ import java.time.LocalDate;
 public class Budget {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int budgetID;
+    private Long budgetID;
 
-    @NotNull(message = "Amount cannot be null")
-    @Positive(message = "Amount must be positive")
-    private double amount;
+    @Column(nullable = false)
+    private double amountAllocated;
 
-    @NotNull(message = "Start date cannot be null")
+    @Column(nullable = false)
+    private double amountSpent;
+
+    @Column(nullable = false)
     private LocalDate startDate;
 
-    @NotNull(message = "End date cannot be null")
+    @Column(nullable = false)
     private LocalDate endDate;
 
+    @Enumerated(EnumType.STRING)
     private BudgetCategory category;
 
+    @Enumerated(EnumType.STRING)
+    private BudgetStatus status;
+
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 }

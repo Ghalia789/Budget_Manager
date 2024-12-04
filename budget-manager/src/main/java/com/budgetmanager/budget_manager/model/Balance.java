@@ -16,9 +16,9 @@ public class Balance {
     private Long id;
 
     @Column(nullable = false)
-    private BigDecimal amount; // Stores the current balance
+    private BigDecimal amount;
 
     @OneToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 }

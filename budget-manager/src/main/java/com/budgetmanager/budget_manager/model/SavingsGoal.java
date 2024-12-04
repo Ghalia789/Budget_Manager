@@ -14,18 +14,28 @@ import java.time.LocalDate;
 public class SavingsGoal {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int goalID;
+    private Long goalID;
 
+    @Column(nullable = false)
     private String goalName;
+
+    @Column(nullable = false)
     private double targetAmount;
+
+    @Column(nullable = false)
     private double currentAmount;
+
+    @Column(nullable = false)
     private LocalDate targetDate;
 
+    @Enumerated(EnumType.STRING)
+    private GoalStatus status;
+
     @ManyToOne
-    @JoinColumn(name = "category_id")
+    @JoinColumn(name = "category_id", nullable = false)
     private SavingsCategory category;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 }

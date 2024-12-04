@@ -15,19 +15,21 @@ public class Transaction {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int transactionID;
+    private Long transactionID;
 
+    @Column(nullable = false)
     private double amount;
+
+    @Column(nullable = false)
     private LocalDate date;
-    private String category;
 
     @Enumerated(EnumType.STRING)
-    private TransactionType type; // Enum to define type (Income or Expense)
+    private TransactionType type;
 
     private String description;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 }
 
