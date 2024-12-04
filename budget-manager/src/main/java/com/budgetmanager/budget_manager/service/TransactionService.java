@@ -29,7 +29,7 @@ public class TransactionService {
         // Update fields
         transaction.setAmount(updatedTransaction.getAmount());
         transaction.setDate(updatedTransaction.getDate());
-        transaction.setCategory(updatedTransaction.getCategory());
+        transaction.setAmount(updatedTransaction.getAmount());
         transaction.setType(updatedTransaction.getType());
         transaction.setDescription(updatedTransaction.getDescription());
 

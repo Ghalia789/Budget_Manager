@@ -13,5 +13,4 @@ public class LoginController {
         return "login";  // Thymeleaf template name
     }
 
-
 }

@@ -14,7 +14,7 @@ import java.time.LocalDate;
 public class Budget {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long budgetID;
+    private int budgetID;
 
     @Column(nullable = false)
     private double amountAllocated;

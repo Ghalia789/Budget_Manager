@@ -57,7 +57,8 @@ public class BudgetService {
                 .orElseThrow(() -> new BudgetNotFoundException("Budget not found")); // Use a custom exception if not found
 
         // Update the existing budget with new values
-        existingBudget.setAmount(updatedBudget.getAmount());
+        existingBudget.setCategory(updatedBudget.getCategory());
+        existingBudget.setAmountSpent(updatedBudget.getAmountSpent());
         existingBudget.setStartDate(updatedBudget.getStartDate()); // Update other fields as needed
         existingBudget.setEndDate(updatedBudget.getEndDate());
         existingBudget.setCategory(updatedBudget.getCategory());

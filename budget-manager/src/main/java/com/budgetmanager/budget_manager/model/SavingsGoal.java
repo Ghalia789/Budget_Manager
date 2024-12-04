@@ -14,7 +14,7 @@ import java.time.LocalDate;
 public class SavingsGoal {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long goalID;
+    private int goalID;
 
     @Column(nullable = false)
     private String goalName;
