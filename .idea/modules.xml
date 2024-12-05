@@ -3,7 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/Budget_Manager.iml" filepath="$PROJECT_DIR$/.idea/Budget_Manager.iml" />
-      <module fileurl="file://$PROJECT_DIR$/budget-manager/budget-manager.iml" filepath="$PROJECT_DIR$/budget-manager/budget-manager.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/budget-manager.iml" filepath="$PROJECT_DIR$/.idea/budget-manager.iml" />
     </modules>
   </component>
 </project>
