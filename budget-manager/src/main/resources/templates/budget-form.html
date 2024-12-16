@@ -11,15 +11,14 @@
 </head>
 <body>
 <!-- Include Navbar -->
-<!-- This is only an example form  -->
 <div th:include="navbar :: navbar"></div>
 <div class="container mt-5">
-    <h1 th:text="${budget.budgetID == null ? 'Create New Budget' : 'Edit Budget'}" class="mb-4"></h1>
+    <h1 th:text="${budget.budgetID == 0 ? 'Create New Budget' : 'Edit Budget'}" class="mb-4"></h1>
 
-    <form th:action="@{/budgets/save}" th:object="${budget}" method="post">
+    <form th:action="${budget.budgetID == 0 ? '/budgets/save' : '/budgets/update/' + budget.budgetID}" th:object="${budget}" method="post">
         <div class="mb-3">
-            <label for="amount" class="form-label">Amount</label>
-            <input type="number" id="amount" class="form-control" th:field="*{amount}" placeholder="Enter Amount" required />
+            <label for="amount" class="form-label">Amount Allocated</label>
+            <input type="number" id="amount" class="form-control" th:field="*{amountAllocated}" placeholder="Enter Amount" required />
         </div>
 
         <div class="mb-3">
@@ -34,16 +33,21 @@
 
         <div class="mb-3">
             <label for="category" class="form-label">Category</label>
-            <input type="text" id="category" class="form-control" th:field="*{category}" placeholder="Enter Category" required />
+            <select id="category" class="form-control" th:field="*{category}" required>
+                <option value="" th:text="'Select Category'"></option>
+                <option th:each="category : ${T(com.budgetmanager.budget_manager.model.BudgetCategory).values()}"
+                        th:value="${category}" th:text="${category.toString().toLowerCase()}"></option>
+            </select>
         </div>
 
-        <button type="submit" class="btn btn-primary">Save Budget</button>
+
+        <button type="submit" href="/budgets/save" class="btn btn-primary">Save Budget</button>
     </form>
 
     <a href="/budgets" class="btn btn-secondary mt-3">Back to Budget List</a>
 </div>
 
 <!-- Bootstrap JS (Local File) -->
-<script src="/js/bootstrap.bundle.min.js"></script>
+<script src="/css/bootstrap.bundle.min.js"></script>
 </body>
 </html>

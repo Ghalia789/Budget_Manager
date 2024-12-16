@@ -10,8 +10,8 @@ public enum BudgetCategory {
     SAVINGS,
     MISCELLANEOUS;
 
-    @Override
-    public String toString() {
+    //@Override
+    /*public String toString() {
         // Return a more user-friendly string representation of each category
         return switch (this) {
             case FOOD -> "Food";
@@ -24,5 +24,5 @@ public enum BudgetCategory {
             case MISCELLANEOUS -> "Miscellaneous";
             default -> super.toString();
         };
-    }
+    }*/
 }

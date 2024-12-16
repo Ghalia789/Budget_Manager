@@ -11,5 +11,5 @@ public interface BalanceRepository extends JpaRepository<Balance, Long> {
     // Custom query method to find a Balance by associated User
     Optional<Balance> findByUser(User user);
 
-    Balance findByUser_UserId(Long userId);
+    Balance findByUser_UserId(int userId);
 }

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -43,6 +44,17 @@ public class UserService {
 
         user.setBalance(defaultBalance);
         userRepository.save(user);  // Save the user
+    }
+
+    public User getUserByUsername(String username) {
+        Optional<User> userOptional = userRepository.findByUsername(username);
+
+        // Check if user is present
+        if (userOptional.isPresent()) {
+            return userOptional.get();  // Return the User if present
+        } else {
+            throw new RuntimeException("User not found with username: " + username);
+        }
     }
     // Check if the username exists
     public boolean existsByUsername(String username) {

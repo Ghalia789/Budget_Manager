@@ -1,11 +1,14 @@
 package com.budgetmanager.budget_manager.controller;
 
 import com.budgetmanager.budget_manager.model.Budget;
+import com.budgetmanager.budget_manager.model.BudgetStatus;
 import com.budgetmanager.budget_manager.model.User;
 import com.budgetmanager.budget_manager.service.BudgetService;
+import com.budgetmanager.budget_manager.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -14,30 +17,37 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Controller
-@RequestMapping("/budgets")
 public class BudgetController {
     @Autowired
     private BudgetService budgetService;
 
+    @Autowired
+    private UserService userService;
 
-    @GetMapping
-    public String manageBudgets(Model model, @AuthenticationPrincipal User user) {
+    @GetMapping("/budgets")
+    public String manageBudgets(Model model) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userService.getUserByUsername(username);
         model.addAttribute("budgets", budgetService.getBudgetsByUserId(user.getUserId()));
         model.addAttribute("budget", new Budget()); // For edit form
         return "manage-budgets-homepage";
     }
-    @GetMapping("/new")
+    @GetMapping("/budgets/new")
     public String showBudgetForm(Model model) {
         model.addAttribute("budget", new Budget());  // Add an empty Budget object to the model
         return "budget-form";  // This will refer to the Thymeleaf template "budget-form.html"
     }
 
-    @PostMapping("/save")
-    public String saveBudget(@Valid Budget budget, BindingResult result, Model model) {
+
+    @PostMapping("/budgets/save")
+    public String saveBudget(@Valid Budget budget, BindingResult result) {
         if (result.hasErrors()) {
             return "budget-form";  // If there are validation errors, return to the form
         }
-
+        // Set the status to ACTIVE if it's a new budget
+        if (budget.getStatus() == null) {
+            budget.setStatus(BudgetStatus.ACTIVE); // Default status
+        }
         budgetService.saveBudget(budget);  // Save the valid budget
         return "redirect:/budgets";  // Redirect to the list of all budgets
     }
@@ -50,7 +60,7 @@ public class BudgetController {
     }*/
 
     // Show the form to update an existing budget
-    @GetMapping("/edit/{id}")
+    @GetMapping("/budgets/edit/{id}")
     public String editBudget(@PathVariable("id") int id, Model model) {
         Budget budget = budgetService.getBudgetById(id); // Fetch the budget by ID
         if (budget == null) {
@@ -61,11 +71,10 @@ public class BudgetController {
     }
 
     // Handle the submission of the updated budget
-    @PostMapping("/update/{id}")
+    @PostMapping("/budgets/update/{id}")
     public String updateBudget(@PathVariable("id") int id,
                                @Valid @ModelAttribute("budget") Budget updatedBudget,
-                               BindingResult result,
-                               Model model) {
+                               BindingResult result) {
         if (result.hasErrors()) {
             return "budget-form"; // If there are validation errors, return to the form
         }
@@ -76,7 +85,7 @@ public class BudgetController {
     }
 
     // Handle deleting a budget
-    @GetMapping("/delete/{id}")
+    @GetMapping("/budgets/delete/{id}")
     public String deleteBudget(@PathVariable("id") int id) {
         budgetService.deleteBudget(id); // Delete the budget by ID
         return "redirect:/budgets"; // Redirect to the list of all budgets

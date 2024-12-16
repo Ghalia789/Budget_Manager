@@ -46,6 +46,7 @@ public class SecurityConfig {
                 .formLogin() // Use Spring Security's default form login
                 .loginPage("/login") // Custom login page
                 .defaultSuccessUrl("/dashboard", true) // Redirect to /dashboard after successful login
+                .permitAll()
                 .permitAll() // Allow login page to be accessed by all
                 .and()
                 .logout()

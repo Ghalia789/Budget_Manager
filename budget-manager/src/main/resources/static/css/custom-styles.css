@@ -16,19 +16,103 @@
     color: #fff !important;
 }
 .card {
-    border-radius: 8px;
-    background-color: #F8F9FA;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* subtle shadow for depth */
+    padding: 20px;
+    margin: 15px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    color: var(--text-color);
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 200px;
+}
+.card:hover {
+    transform: translateY(-5px); /* slight lift effect */
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2); /* stronger shadow on hover */
+}
+
+.card .card-header {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: var(--primary-color);
+    margin-bottom: 10px;
 }
 
 .card-title {
     font-weight: 700;
+    font-size: 1.5em;
     color: var(--primary-color);
+
 }
 
 .card-body {
     padding: 20px;
+    font-size: 1em;
+    color: var(--secondary-text);
+    flex-grow: 1;
+    display: flex;
+}
+/* Accent Button */
+.card .btn {
+    background-color: var(--accent-color);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s ease;
+}
+.card .btn:hover {
+    background-color: var(--primary-color);
 }
 
+.card .btn:active {
+    transform: scale(0.98);
+}
+.welcome-card {
+    background-color: #ffffff;
+    border-radius: 10px;
+    padding: 25px;
+    margin: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* subtle shadow for soft depth */
+    transition: box-shadow 0.3s ease;
+    color: var(--text-color);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Hover effect to keep it subtle */
+.welcome-card:hover {
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15); /* very gentle increase in shadow */
+}
+/* Title/Welcome Message */
+.welcome-card h2 {
+    font-size: 1.4em;
+    color: var(--primary-color);
+    font-weight: 500; /* lighter weight for elegance */
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+/* Subtitle or Description */
+.welcome-card p {
+    font-size: 1.1em;
+    color: var(--secondary-text);
+    text-align: center;
+    line-height: 1.6;
+}
+.wallet-icon {
+    font-size: 3em;
+    margin-right: 10px;
+    color: var(--primary-color); /* Primary color for the icon */
+}
 .navbar .nav-link.active {
     color: var(--accent-color) !important;
 }

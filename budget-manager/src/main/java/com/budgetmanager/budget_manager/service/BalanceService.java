@@ -39,7 +39,7 @@ public class BalanceService {
     }
 
     // Get balance by user ID
-    public Balance getBalanceByUserId(Long userId) {
+    public Balance getBalanceByUserId(int userId) {
         return balanceRepository.findByUser_UserId(userId);
     }
 

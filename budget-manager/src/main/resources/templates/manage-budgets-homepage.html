@@ -3,87 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <title>Manage Budgets</title>
-
-    <!-- Bootstrap CSS -->
-    <link href="/css/bootstrap.min.css" rel="stylesheet">
-    <link href="/css/custom-styles.css" rel="stylesheet">
-</head>
+        <link href="/css/bootstrap.min.css" rel="stylesheet">
+        <link href="/css/custom-styles.css" rel="stylesheet">
+    </head>
 <body>
 <div th:include="navbar :: navbar"></div>
-<!--this  is an example of the budgets page-->
+
+<!-- Main Container -->
 <div class="container mt-5">
-    <h2 class="mb-4 text-primary">Manage Budgets</h2>
-
-    <!-- Add New Budget Button -->
-    <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#budgetModal"
-            th:onclick="'setBudgetData(null)'">
-        Add New Budget
-    </button>
-
-    <!-- Budget Cards Section -->
     <div class="row">
-        <div class="col-md-4 mb-4" th:each="budget : ${budgets}">
-            <div class="card shadow-sm border-primary">
-                <div class="card-body">
-                    <h5 class="card-title" th:text="${budget.category}"></h5>
-                    <h6 class="card-subtitle mb-2 text-muted" th:text="${#dates.format(budget.startDate, 'yyyy-MM-dd')} + ' - ' + ${#dates.format(budget.endDate, 'yyyy-MM-dd')}"></h6>
-                    <p class="card-text"><strong>Amount:</strong> $<span th:text="${budget.amount}"></span></p>
+        <!-- Button to add new budget -->
+        <div class="col-md-12 mb-4">
+            <a href="/budgets/new" class="btn btn-primary">
+                <i class="fa fa-plus"></i> Add New Budget
+            </a>
+        </div>
 
-                    <!-- Edit and Delete Buttons -->
-                    <div class="d-flex justify-content-between">
-                        <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#budgetModal"
-                                th:onclick="'setBudgetData(' + ${budget.budgetID} + ')'">
-                            Edit
-                        </button>
-                        <a th:href="@{/budgets/delete/{id}(id=${budget.budgetID})}" class="btn btn-sm btn-danger"
-                           onclick="return confirm('Are you sure you want to delete this budget?');">Delete</a>
+        <!-- Display Budgets in Card Format -->
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-4 mb-3" th:each="budget : ${budgets}">
+                    <div class="card shadow-sm">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="card-title" th:text="${budget.category}"></h5>
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text"><strong>Allocated:</strong> $<span th:text="${budget.amountAllocated}"></span></p>
+                            <p class="card-text"><strong>Spent:</strong> $<span th:text="${budget.amountSpent}"></span></p>
+                            <p class="card-text"><strong>Duration:</strong> <span th:text="${budget.startDate}"></span> to <span th:text="${budget.endDate}"></span></p>
+                        </div>
+                        <div class="card-footer bg-light">
+                            <button class="btn btn-secondary btn-sm">View Details</button>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
-    <!-- Modal for Creating/Editing Budget -->
-    <div class="modal fade" id="budgetModal" tabindex="-1" aria-labelledby="budgetModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="budgetModalLabel" th:text="${budget.budgetID == null ? 'Add New Budget' : 'Edit Budget'}"></h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form th:action="@{/budgets/save}" th:object="${budget}" method="post">
-                        <input type="hidden" th:field="*{budgetID}" />
-
-                        <div class="mb-3">
-                            <label for="amount" class="form-label">Amount</label>
-                            <input type="number" id="amount" class="form-control" th:field="*{amount}" min="0" step="0.01" placeholder="Enter Amount" required />
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="category" class="form-label">Category</label>
-                            <select id="category" class="form-select" th:field="*{category}" required>
-                                <option th:each="category : ${categories}" th:value="${category}" th:text="${category}"></option>
-                            </select>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="startDate" class="form-label">Start Date</label>
-                            <input type="date" id="startDate" class="form-control" th:field="*{startDate}" required />
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="endDate" class="form-label">End Date</label>
-                            <input type="date" id="endDate" class="form-control" th:field="*{endDate}" required />
-                        </div>
-
-                        <button type="submit" class="btn btn-primary w-100">Save Budget</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
 </div>
-
 </body>
 </html>

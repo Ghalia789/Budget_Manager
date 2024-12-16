@@ -19,7 +19,7 @@ public class Budget {
     @Column(nullable = false)
     private double amountAllocated;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private double amountSpent;
 
     @Column(nullable = false)
