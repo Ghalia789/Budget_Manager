@@ -28,8 +28,19 @@ public class Transaction {
 
     private String description;
 
+    // Optional relationship: expense can be linked to a budget
+    @ManyToOne
+    @JoinColumn(name = "budget_id", nullable = true)
+    private Budget budget;
+
+    // Optional relationship: income can be linked to a savings goal
+    @ManyToOne
+    @JoinColumn(name = "goal_id", nullable = true)
+    private SavingsGoal savingsGoal;
+
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
 }
 

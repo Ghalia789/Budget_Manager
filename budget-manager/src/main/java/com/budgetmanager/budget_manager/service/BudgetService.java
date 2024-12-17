@@ -42,7 +42,7 @@ public class BudgetService {
 
     // Get budgets by user ID
     public List<Budget> getBudgetsByUserId(int userId) {
-        return budgetRepository.findAllByUser_UserId((long) userId); // Assuming the User entity has 'userId'
+        return budgetRepository.findAllByUser_UserId( userId); // Assuming the User entity has 'userId'
     }
 
     // Update a budget's details

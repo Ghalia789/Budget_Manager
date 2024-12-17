@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.List;
+
 
 @Entity
 @Data
@@ -38,4 +40,9 @@ public class SavingsGoal {
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
+    // One savings goal can have multiple transactions
+    @OneToMany(mappedBy = "savingsGoal", cascade = CascadeType.ALL)
+    private List<Transaction> transactions;
+
 }

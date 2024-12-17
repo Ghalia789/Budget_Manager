@@ -8,6 +8,6 @@ import java.util.List;
 public interface BudgetRepository extends JpaRepository<Budget, Long> {
 
     // Custom query to find budgets by user ID
-    List<Budget> findAllByUser_UserId(Long userId);
+    List<Budget> findAllByUser_UserId(int userId);
 
 }

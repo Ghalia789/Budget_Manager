@@ -7,6 +7,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import java.time.LocalDate;
+import java.util.List;
+
 @Entity
 @Data
 @NoArgsConstructor
@@ -37,4 +39,8 @@ public class Budget {
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
+    // One budget can have multiple transactions
+    @OneToMany(mappedBy = "budget", cascade = CascadeType.ALL)
+    private List<Transaction> transactions;
 }
