@@ -37,9 +37,9 @@ public class SavingsGoalService {
     }
 
     // Get savings goals by user ID
-    /*public List<SavingsGoal> getSavingsGoalsByUserId(Long userId) {
-        return savingsGoalRepository.findByUser_Id(userId); // Find savings goals by user ID
-    }*/
+    public List<SavingsGoal> getSavingsGoalsByUserId(int userId) {
+        return savingsGoalRepository.findAllByUser_UserId(userId); // Find savings goals by user ID
+    }
 
     // Get savings goals by category ID
    /* public List<SavingsGoal> getSavingsGoalsByCategoryId(Long categoryId) {

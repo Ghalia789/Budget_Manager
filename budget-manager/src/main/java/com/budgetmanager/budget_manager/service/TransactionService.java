@@ -61,4 +61,7 @@ public class TransactionService {
     public List<Transaction> getTransactionsSortedByDate(User user) {
         return transactionRepository.findByUserOrderByDateDesc(user);
     }
+    public List<Transaction> getTransactionsByUser(Long userId) {
+        return transactionRepository.findByUserUserId(userId);
+    }
 }

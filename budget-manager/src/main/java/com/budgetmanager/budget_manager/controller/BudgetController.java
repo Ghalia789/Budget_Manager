@@ -29,7 +29,6 @@ public class BudgetController {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userService.getUserByUsername(username);
         model.addAttribute("budgets", budgetService.getBudgetsByUserId(user.getUserId()));
-        model.addAttribute("budget", new Budget()); // For edit form
         return "manage-budgets-homepage";
     }
     @GetMapping("/budgets/new")

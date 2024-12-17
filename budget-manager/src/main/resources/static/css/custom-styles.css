@@ -28,7 +28,8 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    height: 200px;
+    min-height: 250px; /* Minimum height to give some space */
+    flex-grow: 1; /* Allow it to grow based on content */
 }
 .card:hover {
     transform: translateY(-5px); /* slight lift effect */
