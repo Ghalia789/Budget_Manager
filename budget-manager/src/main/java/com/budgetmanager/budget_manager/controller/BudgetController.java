@@ -1,5 +1,7 @@
 package com.budgetmanager.budget_manager.controller;
 
+
+import jakarta.servlet.http.HttpSession;
 import com.budgetmanager.budget_manager.model.Budget;
 import com.budgetmanager.budget_manager.model.BudgetStatus;
 import com.budgetmanager.budget_manager.model.User;
@@ -7,6 +9,7 @@ import com.budgetmanager.budget_manager.service.BudgetService;
 import com.budgetmanager.budget_manager.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -39,17 +42,36 @@ public class BudgetController {
 
 
     @PostMapping("/budgets/save")
-    public String saveBudget(@Valid Budget budget, BindingResult result) {
-        if (result.hasErrors()) {
-            return "budget-form";  // If there are validation errors, return to the form
+    public String saveBudget(@Valid Budget budget, BindingResult result, Model model) {
+        try {
+            if (result.hasErrors()) {
+                model.addAttribute("budget", budget); // Retain the budget data in the model
+                model.addAttribute("error", "Please correct the errors in the form."); // Error message for the user
+                return "budget-form"; // Return to the form view
+            }
+
+            if (budget.getStatus() == null) {
+                budget.setStatus(BudgetStatus.ACTIVE); // Default status
+            }
+
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            String username = auth.getName();
+            User user = userService.getUserByUsername(username);
+            if (user == null) {
+                model.addAttribute("error", "User not found. Please log in again.");
+                return "error";
+            }
+            budget.setUser(user);
+            budgetService.saveBudget(budget);
+            return "redirect:/budgets";
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            model.addAttribute("error", "An unexpected error occurred while saving the budget. Please try again.");
+            return "budget-form"; // Return to the form view with the error message
         }
-        // Set the status to ACTIVE if it's a new budget
-        if (budget.getStatus() == null) {
-            budget.setStatus(BudgetStatus.ACTIVE); // Default status
-        }
-        budgetService.saveBudget(budget);  // Save the valid budget
-        return "redirect:/budgets";  // Redirect to the list of all budgets
     }
+
     // List all budgets
     /*@GetMapping
     public String getAllBudgets(Model model) {

@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title th:text="${budget.budgetID == null ? 'Create New Budget' : 'Edit Budget'}"></title>
+    <title th:action="${budget.budgetID == null || budget.budgetID == 0 ? '/budgets/save' : '/budgets/update/' + budget.budgetID}"></title>
 
     <!-- Bootstrap CSS (Local File) -->
     <link href="/css/bootstrap.min.css" rel="stylesheet">
