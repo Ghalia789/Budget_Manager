@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Edit Savings Goal</title>
+  <link href="/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/css/custom-styles.css" rel="stylesheet">
+  <!-- FontAwesome CDN (for using icons) -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+<body>
+<div th:include="navbar :: navbar"></div>
+
+<div class="container mt-5">
+
+  <div class="welcome-card">
+    <h2>Edit Savings Goal</h2>
+    <p>Modify your savings goal details below.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-header">Savings Goal Details</div>
+    <div class="card-body">
+      <form th:action="@{/savingsgoals/edit/{id}(id=${savingsGoal.goalID})}" method="post">
+        <!-- Hidden input to store the goal ID -->
+        <input type="hidden" th:value="${savingsGoal.goalID}" name="goalID">
+
+        <div class="form-group">
+          <label for="goalName">Goal Name:</label>
+          <input type="text" class="form-control" id="goalName" name="goalName" th:value="${savingsGoal.goalName}" required>
+        </div>
+
+        <div class="form-group">
+          <label for="targetAmount">Target Amount:</label>
+          <input type="number" step="0.01" class="form-control" id="targetAmount" name="targetAmount" th:value="${savingsGoal.targetAmount}" required>
+        </div>
+
+        <div class="form-group">
+          <label for="currentAmount">Current Amount:</label>
+          <input type="number" step="0.01" class="form-control" id="currentAmount" name="currentAmount" th:value="${savingsGoal.currentAmount}" required>
+        </div>
+
+        <div class="form-group">
+          <label for="targetDate">Target Date:</label>
+          <input type="date" class="form-control" id="targetDate" name="targetDate" th:value="${savingsGoal.targetDate}" required>
+        </div>
+
+        <div class="form-group">
+          <label for="category">Category:</label>
+          <select class="form-control" id="category" name="category" required>
+            <option th:each="category : ${categories}"
+                    th:value="${category.categoryID}"
+                    th:text="${category.categoryName}"
+                    th:selected="${category.categoryID == savingsGoal.category.categoryID}">
+            </option>
+          </select>
+        </div>
+
+        <button type="submit" class="btn btn-primary mt-3">Save Changes</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

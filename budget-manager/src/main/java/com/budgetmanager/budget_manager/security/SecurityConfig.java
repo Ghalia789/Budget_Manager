@@ -50,7 +50,11 @@ public class SecurityConfig {
                 .permitAll() // Allow login page to be accessed by all
                 .and()
                 .logout()
-                .permitAll(); // Allow users to log out
+                .logoutUrl("/logout")  // Define the logout URL
+                .logoutSuccessUrl("/login")  // Redirect to login page after successful logout
+                .invalidateHttpSession(true)  // Invalidate the session to log out the user
+                .clearAuthentication(true);  // Clear authentication info
+
 
         logger.info("Security filter chain configured successfully");
 

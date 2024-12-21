@@ -1,20 +1,22 @@
 package com.budgetmanager.budget_manager.service;
 
 import com.budgetmanager.budget_manager.model.Budget;
+import com.budgetmanager.budget_manager.model.Transaction;
 import com.budgetmanager.budget_manager.repository.BudgetRepository;
 import com.budgetmanager.budget_manager.service.errors.BudgetNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class BudgetService {
     @Autowired
     private BudgetRepository budgetRepository;
+
+    @Autowired
+    private EmailService emailService;
 
     // Create or update a budget
     public Budget saveBudget(Budget budget) {
@@ -47,23 +49,32 @@ public class BudgetService {
 
     // Update a budget's details
     public Budget updateBudget(int id, Budget updatedBudget) {
-        // Check if the budget exists
-        if (!budgetRepository.existsById((long) id)) {
-            throw new BudgetNotFoundException("Budget not found"); // Handle the case where the budget doesn't exist
-        }
-
-        // Retrieve the existing budget from the repository
         Budget existingBudget = budgetRepository.findById((long) id)
-                .orElseThrow(() -> new BudgetNotFoundException("Budget not found")); // Use a custom exception if not found
+                .orElseThrow(() -> new BudgetNotFoundException("Budget not found"));
 
-        // Update the existing budget with new values
         existingBudget.setCategory(updatedBudget.getCategory());
         existingBudget.setAmountSpent(updatedBudget.getAmountSpent());
-        existingBudget.setStartDate(updatedBudget.getStartDate()); // Update other fields as needed
+        existingBudget.setStartDate(updatedBudget.getStartDate());
         existingBudget.setEndDate(updatedBudget.getEndDate());
-        existingBudget.setCategory(updatedBudget.getCategory());
+        // Calculate the total amount spent from the linked transactions
+        double totalSpent = existingBudget.getTransactions().stream()
+                .mapToDouble(Transaction::getAmount) // Assuming each Transaction has a getAmount() method
+                .sum();
 
-        // Save and return the updated budget
+        // Set the total spent amount
+        existingBudget.setAmountSpent(totalSpent);
+        // Check if budget usage exceeds 90%
+        double usagePercentage = (existingBudget.getAmountSpent() / existingBudget.getAmountAllocated()) * 100;
+        if (usagePercentage >= 90) {
+            // Send an email to notify the user
+            emailService.sendBudgetLimitWarningEmail(
+                    existingBudget.getUser().getEmail(),
+                    existingBudget.getUser().getUsername(),
+                    existingBudget.getCategory().name(),
+                    usagePercentage
+            );
+        }
+
         return budgetRepository.save(existingBudget);
     }
 
@@ -74,68 +85,25 @@ public class BudgetService {
         }
     }
 
-    //these are in case of using an external frontend framework making this an api
-    // Create or update a budget
-    /*public Budget saveBudget(Budget budget) {
-        return budgetRepository.save(budget);
-    }
-    // Create or update a budget
-    public ResponseEntity<Budget> saveorupdateBudget(Budget budget) {
-        if (budget == null) {
-            return ResponseEntity.badRequest().build(); // Return 400 Bad Request if input is null
+    public void addTransactionToBudget(int budgetId, Transaction transaction) {
+        // Fetch the budget from the repository
+        Budget budget = budgetRepository.findById((long) budgetId)
+                .orElseThrow(() -> new RuntimeException("Budget not found"));
+
+        // Initialize the transactions list if necessary
+        if (budget.getTransactions() == null) {
+            budget.setTransactions(new ArrayList<>());
         }
 
-        // Save and return the budget with status 201 Created
-        Budget savedBudget = budgetRepository.save(budget);
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedBudget);
+        // Set the bidirectional relationship
+        //transaction.setBudget(budget);
+
+        // Add the transaction to the budget
+        budget.getTransactions().add(transaction);
+
+        // Save the transaction and the budget
+        //transactionRepository.save(transaction);
+        budgetRepository.save(budget); // Optional, depending on cascading settings
     }
-
-    // Get all budgets
-    public ResponseEntity<List<Budget>> getAllBudgets() {
-        List<Budget> budgets = budgetRepository.findAll();
-        if (budgets.isEmpty()) {
-            return ResponseEntity.noContent().build(); // Return 204 No Content if no budgets exist
-        }
-        return ResponseEntity.ok(budgets); // Return 200 OK with the list of budgets
-    }
-    // Get a budget by its ID
-    public ResponseEntity<Budget> getBudgetById(int id) {
-        Optional<Budget> budgetOptional = budgetRepository.findById((long) id);
-        // Return 200 OK with the budget if found
-        // Return 404 Not Found if the budget doesn't exist
-        return budgetOptional.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
-    }
-
-    // Delete a budget by its ID
-    public ResponseEntity<Void> deleteBudget(int id) {
-        if (!budgetRepository.existsById((long) id)) {
-            return ResponseEntity.notFound().build(); // Return 404 Not Found if the budget doesn't exist
-        }
-
-        // Delete the budget and return 204 No Content
-        budgetRepository.deleteById((long) id);
-        return ResponseEntity.noContent().build();
-    }
-
-    // Get budgets by user ID
-    public ResponseEntity<List<Budget>> getBudgetsByUserId(int userId) {
-        List<Budget> budgets = budgetRepository.findAllByUser_UserId((long) userId); // Assuming the User entity has 'userId'
-        if (budgets.isEmpty()) {
-            return ResponseEntity.noContent().build(); // Return 204 No Content if no budgets exist for the user
-        }
-        return ResponseEntity.ok(budgets); // Return 200 OK with the list of budgets
-    }
-
-    // Update a budget's details
-    public ResponseEntity<Budget> updateBudget(int id, Budget updatedBudget) {
-        // Check if the budget exists
-        if (!budgetRepository.existsById((long) id)) {
-            return ResponseEntity.notFound().build(); // Return 404 Not Found if the budget doesn't exist
-        }
-
-        updatedBudget.setBudgetID(id); // Ensure the budget ID is set to the correct value
-        Budget savedBudget = budgetRepository.save(updatedBudget); // Save the updated budget
-        return ResponseEntity.ok(savedBudget); // Return 200 OK with the updated budget
-    }*/
 
 }

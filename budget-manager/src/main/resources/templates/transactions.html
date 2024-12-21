@@ -44,11 +44,15 @@
           <td th:text="${transaction.amount}">100.00</td>
           <td th:text="${transaction.description}">Groceries</td>
           <td>
-                            <span th:if="${transaction.type == 'EXPENSE'}"
-                                  th:text="|Budget ID: ${transaction.budgetID}|">Budget</span>
+            <span th:if="${transaction.type == 'EXPENSE'}"
+                  th:text="|Budget ID: ${transaction.budget.budgetName}|">Budget</span>
             <span th:if="${transaction.type == 'INCOME'}"
-                  th:text="|Savings Goal ID: ${transaction.goalID}|">Goal</span>
+                  th:text="|Savings Goal ID: ${transaction.savingsGoal.goalName}|">Goal</span>
             <span th:if="${transaction.budget == null and transaction.savingsGoal== null}">N/A</span>
+          </td>
+          <td>
+            <a th:href="@{/transactions/edit/{id}(id=${transaction.transactionID})}" class="btn btn-sm btn-warning-custom">Edit</a>
+            <a th:href="@{/transactions/delete/{id}(id=${transaction.transactionID})}" class="btn btn-sm btn-danger">Delete</a>
           </td>
         </tr>
         <tr th:if="${#lists.isEmpty(transactions)}">
