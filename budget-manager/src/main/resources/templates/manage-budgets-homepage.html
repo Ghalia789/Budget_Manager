@@ -33,7 +33,7 @@
                             <p class="card-text"><strong>Duration:</strong> <span th:text="${budget.startDate}"></span> to <span th:text="${budget.endDate}"></span></p>
                         </div>
                         <div class="card-footer bg-light">
-                            <button class="btn btn-secondary btn-sm">View Details</button>
+                            <a class="btn btn-edit btn-sm" th:href="@{'/budgets/edit/' + ${budget.budgetID}}">Edit</a>
                         </div>
                     </div>
                 </div>

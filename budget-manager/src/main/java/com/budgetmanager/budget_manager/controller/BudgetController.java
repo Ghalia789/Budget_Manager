@@ -17,7 +17,6 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @Controller
 public class BudgetController {
@@ -100,7 +99,7 @@ public class BudgetController {
             return "budget-form"; // If there are validation errors, return to the form
         }
 
-        updatedBudget.setBudgetID(id); // Ensure the correct ID is set for the updated budget
+        updatedBudget.setBudgetID(id);
         budgetService.updateBudget(id, updatedBudget); // Update the budget
         return "redirect:/budgets"; // Redirect to the list of budgets
     }

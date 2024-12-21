@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="UTF-8">
+  <title>Edit Transaction</title>
+  <link href="/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/css/custom-styles.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    function toggleOptions() {
+      const type = document.getElementById("type").value;
+      document.getElementById("budgetSection").style.display = (type === 'EXPENSE') ? 'block' : 'none';
+      document.getElementById("goalSection").style.display = (type === 'INCOME') ? 'block' : 'none';
+    }
+  </script>
+</head>
+<body>
+<div th:include="navbar :: navbar"></div>
+<div class="container mt-5">
+  <div class="welcome-card">
+    <h2>Edit Transaction</h2>
+    <p>Update the details of your transaction.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-header">Transaction Details</div>
+    <div class="card-body">
+      <form th:action="@{/transactions/update}" th:object="${transaction}" method="post">
+        <input type="hidden" th:field="*{transactionID}" />
+        <div class="form-group">
+          <label>Amount:</label>
+          <input type="number" class="form-control" step="0.01" th:field="*{amount}" required/>
+        </div>
+
+        <div class="form-group">
+          <label>Date:</label>
+          <input type="date" class="form-control" th:field="*{date}" required/>
+        </div>
+
+        <div class="form-group">
+          <label>Type:</label>
+          <select id="type" class="form-control" th:field="*{type}" onchange="toggleOptions()">
+            <option th:each="type : ${types}" th:value="${type}" th:text="${type}"></option>
+          </select>
+        </div>
+
+        <div id="budgetSection" style="display:none;">
+          <label>Select Budget (for Expenses):</label>
+          <select name="budgetID" class="form-control" th:field="*{budget.budgetID}">
+            <option value="">-- None --</option>
+            <option th:each="budget : ${budgets}" th:value="${budget.budgetID}" th:text="|${budget.category} - ${budget.amountAllocated}|"></option>
+          </select>
+        </div>
+
+        <div id="goalSection" style="display:none;">
+          <label>Select Savings Goal (for Incomes):</label>
+          <select name="goalID" class="form-control" th:field="*{savingsGoal.goalID}">
+            <option value="">-- None --</option>
+            <option th:each="goal : ${goals}" th:value="${goal.goalID}" th:text="|${goal.goalName} - Target: ${goal.targetAmount}|"></option>
+          </select>
+        </div>
+
+
+        <div class="form-group">
+          <label>Description:</label>
+          <input type="text" class="form-control" th:field="*{description}"/>
+        </div>
+
+        <button type="submit" class="btn btn-primary mt-3">Update Transaction</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  toggleOptions(); // Initialize on page load
+</script>
+</body>
+</html>

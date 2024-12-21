@@ -1,10 +1,13 @@
 package com.budgetmanager.budget_manager.service;
 
+import com.budgetmanager.budget_manager.model.GoalStatus;
 import com.budgetmanager.budget_manager.model.SavingsGoal;
+import com.budgetmanager.budget_manager.model.Transaction;
 import com.budgetmanager.budget_manager.repository.SavingsGoalRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -14,6 +17,7 @@ public class SavingsGoalService {
 
     // Save or update a savings goal
     public SavingsGoal saveSavingsGoal(SavingsGoal savingsGoal) {
+        savingsGoal.setStatus(GoalStatus.IN_PROGRESS);
         return savingsGoalRepository.save(savingsGoal);
     }
 
@@ -47,12 +51,36 @@ public class SavingsGoalService {
     }*/
 
     // Update a savings goal's details
-    public SavingsGoal updateSavingsGoal(int id, SavingsGoal updatedGoal) {
+    public void updateSavingsGoal(int id, SavingsGoal updatedGoal) {
         if (!savingsGoalRepository.existsById(id)) {
             throw new RuntimeException("Savings Goal not found");
         }
+        updatedGoal.setCurrentAmount(updatedGoal.getCurrentAmount());
+        double totalSaved = getSavingsGoalById(id).getTransactions().stream()
+                .mapToDouble(Transaction::getAmount) // Assuming each Transaction has a getAmount() method
+                .sum();
+        updatedGoal.setCurrentAmount(totalSaved);
+        savingsGoalRepository.save(updatedGoal);
+    }
 
-        updatedGoal.setGoalID(id); // Ensure the goal ID is set to the correct value
-        return savingsGoalRepository.save(updatedGoal); // Save the updated savings goal
+    public void addTransactionToSavingsGoal(int goalId, Transaction transaction) {
+        // Fetch the budget from the repository
+        SavingsGoal goal = savingsGoalRepository.findById(goalId)
+                .orElseThrow(() -> new RuntimeException("Savings Goal not found"));
+
+        // Initialize the transactions list if necessary
+        if (goal.getTransactions() == null) {
+            goal.setTransactions(new ArrayList<>());
+        }
+
+        // Set the bidirectional relationship
+
+
+        // Add the transaction to the budget
+        goal.getTransactions().add(transaction);
+
+        // Save the transaction
+        //transactionRepository.save(transaction);
+        updateSavingsGoal(goalId,goal);
     }
 }

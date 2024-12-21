@@ -4,6 +4,9 @@ import com.budgetmanager.budget_manager.model.Balance;
 import com.budgetmanager.budget_manager.model.User;
 import com.budgetmanager.budget_manager.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -59,5 +62,21 @@ public class UserService {
     // Check if the username exists
     public boolean existsByUsername(String username) {
         return userRepository.existsByUsername(username);
+    }
+
+    public User getLoggedInUser() {
+        // Get authentication object from Spring Security context
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated() || authentication.getPrincipal().equals("anonymousUser")) {
+            throw new IllegalStateException("No user is currently logged in");
+        }
+
+        // Get the username (email) of the authenticated user
+        String username = authentication.getName();
+
+        // Fetch and return the User entity from the database
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + username));
     }
 }

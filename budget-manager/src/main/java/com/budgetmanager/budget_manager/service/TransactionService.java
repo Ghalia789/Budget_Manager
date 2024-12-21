@@ -1,5 +1,6 @@
 package com.budgetmanager.budget_manager.service;
 
+import com.budgetmanager.budget_manager.model.SavingsGoal;
 import com.budgetmanager.budget_manager.model.Transaction;
 import com.budgetmanager.budget_manager.model.TransactionType;
 import com.budgetmanager.budget_manager.model.User;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class TransactionService {
@@ -17,10 +19,33 @@ public class TransactionService {
     @Autowired
     TransactionRepository transactionRepository;
 
+    @Autowired
+    private EmailService emailService;
+
     // Add a new transaction
     public Transaction addTransaction(Transaction transaction) {
-        return transactionRepository.save(transaction);
+        Transaction savedTransaction = transactionRepository.save(transaction);
+
+        // If the transaction affects a savings goal
+        if (transaction.getType() == TransactionType.INCOME && transaction.getSavingsGoal() != null) {
+            SavingsGoal goal = transaction.getSavingsGoal();
+            double updatedAmount = goal.getCurrentAmount() + transaction.getAmount();
+            goal.setCurrentAmount(updatedAmount);
+
+            if (updatedAmount >= goal.getTargetAmount() * 0.9) {
+                // Send an email notification
+                emailService.sendSavingsGoalAchievementEmail(
+                        transaction.getUser().getEmail(),
+                        transaction.getUser().getUsername(),
+                        goal.getGoalName(),
+                        updatedAmount
+                );
+            }
+        }
+
+        return savedTransaction;
     }
+
     // Update an existing transaction
     public Transaction updateTransaction(int transactionID, Transaction updatedTransaction) {
         Transaction transaction = transactionRepository.findById((long) transactionID)
@@ -49,7 +74,9 @@ public class TransactionService {
     public List<Transaction> getIncomeTransactions(User user) {
         return transactionRepository.findByUserAndType(user, TransactionType.INCOME);
     }
-
+    public Transaction getTransactionById(Long id) {
+        return transactionRepository.findById(id).orElse(null); // Return null if not found
+    }
     public List<Transaction> getExpenseTransactions(User user) {
         return transactionRepository.findByUserAndType(user, TransactionType.EXPENSE);
     }
@@ -63,5 +90,14 @@ public class TransactionService {
     }
     public List<Transaction> getTransactionsByUser(Long userId) {
         return transactionRepository.findByUserUserId(userId);
+    }
+    public List<Transaction> getLatestTransactions(User user) {
+        // Get the transactions sorted by date in descending order
+        List<Transaction> allTransactions = getTransactionsSortedByDate(user);
+
+        // Return the first 3 transactions, or the entire list if less than 3
+        return allTransactions.stream()
+                .limit(2)
+                .collect(Collectors.toList());
     }
 }

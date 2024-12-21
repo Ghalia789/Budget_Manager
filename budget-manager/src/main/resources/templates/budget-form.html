@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en"  xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title th:action="${budget.budgetID == null || budget.budgetID == 0 ? '/budgets/save' : '/budgets/update/' + budget.budgetID}"></title>
@@ -23,12 +23,14 @@
 
         <div class="mb-3">
             <label for="startDate" class="form-label">Start Date</label>
-            <input type="date" id="startDate" class="form-control" th:field="*{startDate}" required />
+            <input type="date" id="startDate" class="form-control" th:field="*{startDate}"
+                   th:value="${#temporals.format(budget.startDate, 'dd-MM-yyyy')}" required />
         </div>
 
         <div class="mb-3">
             <label for="endDate" class="form-label">End Date</label>
-            <input type="date" id="endDate" class="form-control" th:field="*{endDate}" required />
+            <input type="date" id="endDate" class="form-control" th:field="*{endDate}"
+                   th:value="${#temporals.format(budget.endDate, 'dd-MM-yyyy')}" required />
         </div>
 
         <div class="mb-3">
@@ -40,8 +42,7 @@
             </select>
         </div>
 
-
-        <button type="submit" href="/budgets/save" class="btn btn-primary">Save Budget</button>
+        <button type="submit" class="btn btn-primary">Save Budget</button>
     </form>
 
     <a href="/budgets" class="btn btn-secondary mt-3">Back to Budget List</a>
